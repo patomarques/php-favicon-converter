@@ -209,7 +209,7 @@ class FaviconGenerator
         ) {
             @mkdir("{$this->root}/favicon", 0755);
             @copy($icon, "{$this->root}/favicon/.original");
-            $this->created == true;
+            $this->created = true;
         }
     }
 
@@ -262,7 +262,7 @@ class FaviconGenerator
         }
 
         if (isset($this->settings['compression']) && $this->settings['compression'] != $compression) {
-            $this->created == true;
+            $this->created = true;
             $this->settings['compression'] = $compression;
         }
 
@@ -303,7 +303,7 @@ class FaviconGenerator
         }
 
         if (isset($this->settings['cropmethod']) && $this->settings['cropmethod'] != $method) {
-            $this->created == true;
+            $this->created = true;
             $this->settings['cropmethod'] = $method;
         }
 
@@ -351,7 +351,7 @@ class FaviconGenerator
                 array_key_exists($key, $this->settings) === false ||
                 (array_key_exists($key, $this->settings) && $this->settings[$key] !== $value)
             ) {
-                $this->created == true;
+                $this->created = true;
                 $this->settings = array_merge($this->settings, $config);
                 break;
             }
