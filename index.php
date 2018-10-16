@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/favicon-generator/src/FaviconGenerator.php';
 
+$metaFavicons = array();
+
 if(!empty($_POST) && !empty($_FILES)){
 
     try{
@@ -20,10 +22,10 @@ if(!empty($_POST) && !empty($_FILES)){
             die('Erro: Formato de arquivo inválido.');
         }
 
-        $uploadFile = $dirToSaveFile . 'thinkr-logo' . $fileType;
+        $uploadFile = $dirToSaveFile . 'logo-custom' . $fileType;
 
         if (move_uploaded_file($_FILES['imagem_favicon']['tmp_name'], $uploadFile)) {
-            chmod($uploadFile, 0777);
+            chmod($uploadFile, 0755);
             echo "<p>Arquivo válido, upload foi realizado com sucesso!</p>";
             echo "<pre>Detalhes do arquivo: ";
             print_r($_FILES);
@@ -47,8 +49,15 @@ if(!empty($_POST) && !empty($_FILES)){
                 'ms-background'       => FaviconGenerator::COLOR_GRAY,
             ));
 
-            if($fav->createAllAndGetHtml()){
-                echo "<p>Favicons foram gerados com sucesso!</p>";
+            if($fav->createAll()){
+                $metaFavicons = $metaFavicons = $fav->getHtml();
+                echo "<h3>Favicons foram gerados com sucesso!</h3>";
+              //  chmod($dirToSaveFileFavicon, 0777);
+                $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dirToSaveFileFavicon), RecursiveIteratorIterator::SELF_FIRST);
+
+                foreach($iterator as $item) {
+                    chmod($item, 0777);
+                }
             }else{
                 echo "<p>Erro: houve alguma falha ao tentar gerar os arquivos favicons!</p>";
             }
@@ -63,6 +72,11 @@ if(!empty($_POST) && !empty($_FILES)){
     <head>
         <title>PHP Favicon Generator</title>
         <link rel="stylesheet" href="css/style.css">
+        <?php
+            if(!empty($metaFavicons)) {
+                print_r($metaFavicons);
+            }
+        ?>
     </head>
     <body>
         <h1>PHP Favicon Generate (Cross Browser)</h1>
